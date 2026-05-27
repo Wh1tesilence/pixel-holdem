@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>PIXEL HOLD'EM</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+
+  <!-- ===== LOBBY VIEW ===== -->
+  <div id="lobby-view" class="view active">
+
+    <div class="lobby-card">
+      <div class="logo">
+        <div class="pixel-suits">
+          <span style="color:#c0392b">♥</span>
+          <span style="color:#1a1a1a">♠</span>
+          PIXEL
+          <span style="color:#1a1a1a">♣</span>
+          <span style="color:#c0392b">♦</span>
+        </div>
+        <h1>HOLD'EM</h1>
+        <div class="subtitle">TEXAS POKER · PIXEL EDITION</div>
+      </div>
+
+      <div id="lobby-join">
+        <div class="form-group">
+          <label>YOUR NAME</label>
+          <input type="text" id="player-name" class="pixel-input" maxlength="12" placeholder="Enter name..." autocomplete="off">
+        </div>
+
+        <div class="btn-row">
+          <button id="btn-create" class="pixel-btn gold">CREATE ROOM</button>
+        </div>
+
+        <div class="divider">OR</div>
+
+        <div class="form-group">
+          <label>ROOM CODE</label>
+          <input type="text" id="room-code-input" class="pixel-input" maxlength="6" placeholder="ABCDEF" autocomplete="off" style="text-transform: uppercase;">
+        </div>
+        <div class="btn-row">
+          <button id="btn-join" class="pixel-btn">JOIN ROOM</button>
+        </div>
+      </div>
+
+      <div id="lobby-room" style="display:none;">
+        <div class="room-code-display">
+          <div class="label">ROOM CODE</div>
+          <div class="code" id="room-code-text"></div>
+        </div>
+
+        <div class="player-list">
+          <div class="label">PLAYERS</div>
+          <div id="player-list-container"></div>
+        </div>
+
+        <div class="btn-row">
+          <button id="btn-start" class="pixel-btn gold" style="display:none;">START GAME</button>
+          <button id="btn-leave" class="pixel-btn danger">LEAVE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== GAME VIEW ===== -->
+  <div id="game-view" class="view">
+
+    <div class="game-header">
+      <span class="phase" id="game-phase">PRE-FLOP</span>
+      <span class="pot">POT: <span id="game-pot">0</span></span>
+      <span class="hand-num">HAND #<span id="hand-num">1</span></span>
+    </div>
+
+    <div class="table-area">
+      <div class="poker-table" id="poker-table">
+        <!-- Community cards -->
+        <div class="community-cards" id="community-cards">
+          <div class="card-placeholder"></div>
+          <div class="card-placeholder"></div>
+          <div class="card-placeholder"></div>
+          <div class="card-placeholder"></div>
+          <div class="card-placeholder"></div>
+        </div>
+        <!-- Player seats injected by JS -->
+      </div>
+    </div>
+
+    <div class="action-panel" id="action-panel">
+      <div class="info-text" id="action-info">Waiting for game to start...</div>
+    </div>
+  </div>
+
+  <!-- ===== RESULT OVERLAY ===== -->
+  <div class="result-overlay" id="result-overlay" style="display:none;">
+    <div class="result-card">
+      <div style="font-size:8px;color:var(--text-dim);margin-bottom:8px;">HAND RESULT</div>
+      <div class="winner-name" id="result-winner"></div>
+      <div class="hand-name" id="result-hand"></div>
+      <div class="pot-amount" id="result-pot"></div>
+      <button class="pixel-btn gold" id="btn-next-hand" style="margin-top:16px;">NEXT HAND</button>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="/js/constants.js"></script>
+  <script src="/js/client.js"></script>
+</body>
+</html>
