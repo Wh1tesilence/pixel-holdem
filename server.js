@@ -7,7 +7,17 @@ const { ROOM_CODE_LENGTH, ACTION_TIMEOUT_MS } = require('./public/js/constants.j
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  transports: ['websocket', 'polling'],
+  pingInterval: 5000,
+  pingTimeout: 30000,
+  connectTimeout: 10000,
+  maxHttpBufferSize: 1e5,
+  allowEIO3: true,
+  perMessageDeflate: {
+    threshold: 1024
+  }
+});
 const PORT = process.env.PORT || 3000;
 
 // Serve static files from public/

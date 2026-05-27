@@ -318,48 +318,50 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  padding: 8px;
   min-height: 0;
+  overflow: hidden;
 }
 
 .poker-table {
   background: var(--table);
-  border: 8px solid var(--wood);
+  border: 6px solid var(--wood);
   position: relative;
   width: 100%;
   max-width: 600px;
-  aspect-ratio: 3/2;
+  max-height: 100%;
+  aspect-ratio: 5 / 7;
   box-shadow:
-    8px 8px 0 0 rgba(0,0,0,0.4),
-    inset 4px 4px 0 0 rgba(255,255,255,0.05),
-    inset -4px -4px 0 0 rgba(0,0,0,0.3);
+    6px 6px 0 0 rgba(0,0,0,0.4),
+    inset 3px 3px 0 0 rgba(255,255,255,0.05),
+    inset -3px -3px 0 0 rgba(0,0,0,0.3);
 }
 
 /* Pixel pattern on felt */
 .poker-table::before {
   content: '';
   position: absolute;
-  inset: 16px;
+  inset: 12px;
   background-image:
     radial-gradient(circle, rgba(255,255,255,0.02) 1px, transparent 1px);
   background-size: 16px 16px;
   pointer-events: none;
 }
 
-/* Community cards */
+/* Community cards — upper center */
 .community-cards {
   position: absolute;
-  top: 50%;
+  top: 38%;
   left: 50%;
   transform: translate(-50%, -50%);
   display: flex;
-  gap: 8px;
+  gap: 6px;
   z-index: 2;
 }
 
 .community-cards .card-placeholder {
-  width: 44px;
-  height: 64px;
+  width: 36px;
+  height: 52px;
   border: 2px dashed rgba(255,255,255,0.15);
   background: rgba(0,0,0,0.15);
 }
@@ -370,10 +372,42 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   z-index: 3;
-  min-width: 80px;
+  min-width: 70px;
+  transform: translate(-50%, -50%);
 }
+
+/* Your seat at bottom — special styling */
+.player-seat.seat-self {
+  min-width: 100px;
+  z-index: 5;
+}
+
+.player-seat.seat-self .hole-cards {
+  display: flex;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.player-seat.seat-self .pixel-card {
+  width: 48px;
+  height: 68px;
+}
+
+.player-seat.seat-self .pixel-card .card-corner { font-size: 9px; }
+.player-seat.seat-self .pixel-card .card-center { font-size: 18px; }
+
+/* Seat positions — using percentages for responsive layout */
+.player-seat.seat-0 { top: 12%; left: 50%; }      /* top */
+.player-seat.seat-1 { top: 18%; left: 88%; }      /* top-right */
+.player-seat.seat-2 { top: 48%; left: 92%; }      /* right */
+.player-seat.seat-3 { top: 75%; left: 88%; }      /* bottom-right */
+.player-seat.seat-4 { top: 88%; left: 50%; }      /* bottom — SELF */
+.player-seat.seat-5 { top: 75%; left: 12%; }      /* bottom-left */
+.player-seat.seat-6 { top: 48%; left: 8%; }       /* left */
+.player-seat.seat-7 { top: 18%; left: 12%; }      /* top-left */
+.player-seat.seat-8 { top: 12%; left: 50%; }      /* top-center (9-player) */
 
 .player-seat .player-name {
   font-size: 7px;
@@ -428,17 +462,6 @@ body {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.3; }
 }
-
-/* Seat positions */
-.seat-0 { top: -10px; left: 50%; transform: translateX(-50%); }
-.seat-1 { top: 10px; right: -40px; }
-.seat-2 { top: 50%; right: -50px; transform: translateY(-50%); }
-.seat-3 { bottom: 10px; right: -40px; }
-.seat-4 { bottom: -10px; left: 50%; transform: translateX(-50%); }
-.seat-5 { bottom: 10px; left: -40px; }
-.seat-6 { top: 50%; left: -50px; transform: translateY(-50%); }
-.seat-7 { top: 10px; left: -40px; }
-.seat-8 { top: -10px; left: 50%; transform: translateX(-50%); } /* overlaps with 0, max 9 handles fine */
 
 /* === Card Component === */
 .pixel-card {
@@ -646,18 +669,12 @@ body {
   .community-cards { gap: 4px; }
   .community-cards .pixel-card { width: 32px; height: 48px; }
   .community-cards .card-placeholder { width: 32px; height: 48px; }
-
-  .seat-1 { right: -20px; }
-  .seat-2 { right: -25px; }
-  .seat-3 { right: -20px; }
-  .seat-5 { left: -20px; }
-  .seat-6 { left: -25px; }
-  .seat-7 { left: -20px; }
 }
 
 @media (max-height: 600px) {
   .poker-table {
-    aspect-ratio: 2/1;
+    aspect-ratio: 5 / 6;
+    max-width: 400px;
   }
 }
 

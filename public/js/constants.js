@@ -1,7 +1,7 @@
 // Poker Constants — shared between client and server
 
 // Card ranks: 0=2, 1=3, ..., 8=10, 9=J, 10=Q, 11=K, 12=A
-const RANK_NAMES = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
+const RANK_NAMES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 const RANK_LONG = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 
 // Suits: 0=spades, 1=hearts, 2=diamonds, 3=clubs

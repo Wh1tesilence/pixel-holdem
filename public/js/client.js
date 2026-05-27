@@ -12,7 +12,14 @@ const $ = (sel) => document.querySelector(sel);
 
 // ---- Init ----
 function init() {
-  socket = io();
+  socket = io({
+    transports: ['websocket', 'polling'],
+    timeout: 10000,
+    reconnection: true,
+    reconnectionDelay: 500,
+    reconnectionDelayMax: 5000,
+    reconnectionAttempts: 20
+  });
 
   socket.on('connect', () => {
     console.log('Connected:', socket.id);
@@ -235,11 +242,15 @@ function renderPlayerSeats(state) {
 
     const isOurTurn = state.currentPlayerIdx === i;
     const isDealer = state.dealerIdx === i;
+    const isSelf = i === ourIdx;
 
     const seatEl = document.createElement('div');
     seatEl.className = `player-seat ${seatClass}`;
+    if (isSelf) seatEl.classList.add('seat-self');
     if (isOurTurn) seatEl.classList.add('active-turn');
     if (player.folded) seatEl.classList.add('folded');
+
+    const isSmall = !isSelf;
 
     seatEl.innerHTML = `
       ${isDealer ? '<div class="dealer-chip">D</div>' : ''}
@@ -248,8 +259,8 @@ function renderPlayerSeats(state) {
       ${player.totalBetThisHand > 0 ? `<span class="player-bet">BET: ${player.totalBetThisHand}</span>` : ''}
       <div class="hole-cards">
         ${player.holeCards.map(c => c === -1
-          ? '<div class="pixel-card face-down"></div>'
-          : createCardHTML(c, true)
+          ? `<div class="pixel-card face-down ${isSmall ? 'small' : ''}"></div>`
+          : createCardHTML(c, isSmall)
         ).join('')}
       </div>
     `;
@@ -259,18 +270,19 @@ function renderPlayerSeats(state) {
 }
 
 function getSeatMap(n) {
-  const positions = ['seat-0', 'seat-1', 'seat-2', 'seat-3', 'seat-4', 'seat-5', 'seat-6', 'seat-7', 'seat-8'];
+  // Index 0 is always seat-4 (bottom = your seat)
+  // Rotation ensures yourIdx maps to index 0 → bottom position
   const maps = {
-    2: ['seat-0', 'seat-4'],
-    3: ['seat-0', 'seat-2', 'seat-4'],
-    4: ['seat-1', 'seat-2', 'seat-5', 'seat-6'],
-    5: ['seat-0', 'seat-1', 'seat-3', 'seat-5', 'seat-6'],
-    6: ['seat-0', 'seat-1', 'seat-2', 'seat-4', 'seat-5', 'seat-6'],
-    7: ['seat-7', 'seat-0', 'seat-1', 'seat-2', 'seat-3', 'seat-5', 'seat-6'],
-    8: ['seat-7', 'seat-0', 'seat-1', 'seat-2', 'seat-3', 'seat-4', 'seat-5', 'seat-6'],
-    9: ['seat-7', 'seat-8', 'seat-0', 'seat-1', 'seat-2', 'seat-3', 'seat-4', 'seat-5', 'seat-6']
+    2: ['seat-4', 'seat-0'],
+    3: ['seat-4', 'seat-0', 'seat-6'],
+    4: ['seat-4', 'seat-0', 'seat-6', 'seat-2'],
+    5: ['seat-4', 'seat-1', 'seat-2', 'seat-6', 'seat-0'],
+    6: ['seat-4', 'seat-1', 'seat-2', 'seat-0', 'seat-5', 'seat-6'],
+    7: ['seat-4', 'seat-0', 'seat-1', 'seat-2', 'seat-3', 'seat-5', 'seat-6'],
+    8: ['seat-4', 'seat-0', 'seat-1', 'seat-2', 'seat-3', 'seat-5', 'seat-6', 'seat-7'],
+    9: ['seat-4', 'seat-0', 'seat-1', 'seat-2', 'seat-3', 'seat-5', 'seat-6', 'seat-7', 'seat-8']
   };
-  return maps[n] || positions.slice(0, n);
+  return maps[n] || ['seat-4', 'seat-0', 'seat-6', 'seat-2', 'seat-1', 'seat-5', 'seat-3', 'seat-7', 'seat-8'];
 }
 
 function renderActionPanel(state) {
@@ -352,7 +364,7 @@ function createCardHTML(cardId, small = false) {
   const rankIdx = cardId % 13;
   const suitIdx = Math.floor(cardId / 13);
 
-  const rankStr = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'][rankIdx];
+  const rankStr = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'][rankIdx];
   const suitStr = ['♠', '♥', '♦', '♣'][suitIdx];
   const colorClass = (suitIdx === 1 || suitIdx === 2) ? 'red' : 'black';
   const sizeClass = small ? 'small' : '';
